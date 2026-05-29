@@ -1,246 +1,268 @@
+/* YAFB — Yet Another Find Bar */
 
 :root {
-	--better-findbar-transform-translateY: 150px;
-	--better-findbar-transform-translateX: -50%;
-	--better-findbar-position-top: auto;
-	--better-findbar-position-bottom: 15px;
-	--better-findbar-position-left: 50%;
-	--better-findbar-position-right: auto;
-	--better-findbar-background-color: var(--zen-colors-primary);
-	--better-findbar-text-color: var(--toolbar-color);
-	--better-findbar-box-shadow: 0 5px 10px #00000080;
+	--yafb-edge-inset: calc(var(--theme-yafb-edge_inset, 15) * 1px);
+	--yafb-textbox-width: calc(var(--theme-yafb-textbox_width, 300) * 1px);
+	--yafb-transform-translateX: -50%;
+	--yafb-transform-translateY: -150px;
+	--yafb-position-top: var(--yafb-edge-inset);
+	--yafb-position-bottom: auto;
+	--yafb-position-left: auto;
+	--yafb-position-right: calc(var(--yafb-edge-inset) + var(--yafb-textbox-width) / -2);
+	--yafb-background-color: #283452;
+	--yafb-text-color: #ffffff;
+	--yafb-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+	--yafb-slide-transform: translateX(var(--yafb-transform-translateX))
+		translateY(var(--yafb-transform-translateY));
 }
 
-/* Custom background */
-@media (-moz-bool-pref: "theme-better_find_bar-enable_custom_background") {
+@media (-moz-bool-pref: "theme-yafb-enable_custom_background") {
 	:root {
-		--better-findbar-background-color: var(--theme-better_find_bar-custom_background);
+		--yafb-background-color: var(--theme-yafb-custom_background, #283452);
 	}
 }
 
-/* Custom text color */
-@media (-moz-bool-pref: "theme-better_find_bar-enable_custom_text_color") {
+@media (-moz-bool-pref: "theme-yafb-enable_theme_background") {
 	:root {
-		--better-findbar-text-color: var(--theme-better_find_bar-custom_text_color);
+		--yafb-background-color: var(--zen-colors-primary);
+		--yafb-text-color: var(--toolbar-color);
+		--yafb-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
 	}
 }
 
-/* Custom box shadow */
-@media (-moz-bool-pref: "theme-better_find_bar-enable_custom_box_shadow") {
+@media (-moz-bool-pref: "theme-yafb-enable_custom_text_color") {
 	:root {
-		--better-findbar-box-shadow: var(--theme-better_find_bar-custom_box_shadow);
+		--yafb-text-color: var(--theme-yafb-custom_text_color, #ffffff);
 	}
+}
+
+@media (-moz-bool-pref: "theme-yafb-enable_custom_box_shadow") {
+	:root {
+		--yafb-box-shadow: var(
+			--theme-yafb-custom_box_shadow,
+			0 5px 10px rgba(0, 0, 0, 0.5)
+		);
+	}
+}
+
+/* Position overrides (dropdown prefs on #theme-YAFB) */
+body:has(#theme-YAFB[theme-yafb-horizontal_position="left"]),
+body:has(#theme-YAFB[theme-yafb-horizontal_position="right"]) {
+	--yafb-transform-translateX: 0%;
+}
+
+body:has(#theme-YAFB[theme-yafb-horizontal_position="left"]) {
+	--yafb-position-left: var(--yafb-edge-inset);
+	--yafb-position-right: auto;
+}
+
+body:has(#theme-YAFB[theme-yafb-horizontal_position="right"]) {
+	--yafb-position-left: auto;
+	--yafb-position-right: var(--yafb-edge-inset);
+}
+
+body:has(#theme-YAFB[theme-yafb-vertical_position="top"]) {
+	--yafb-transform-translateY: -150px;
+	--yafb-position-top: var(--yafb-edge-inset);
+	--yafb-position-bottom: auto;
+}
+
+body:has(#theme-YAFB[theme-yafb-vertical_position="bottom"]) {
+	--yafb-transform-translateY: 150px;
+	--yafb-position-bottom: var(--yafb-edge-inset);
+	--yafb-position-top: auto;
 }
 
 findbar {
+	--yafb-control-height: calc(var(--theme-yafb-control_height, 28) * 1px);
+	--yafb-checkbox-gap: calc(var(--theme-yafb-checkbox_gap, 8) * 1px);
+	--yafb-checkbox-height: var(--theme-yafb-checkbox_height, 2.25rem);
+
 	display: flex !important;
-
-	border-radius: var(--zen-border-radius) !important;
-	margin: 0px !important;
-
-	width: 90% !important;
-	max-width: calc(var(--theme-better_find_bar-textbox_width) * 1px); 
-
-	height: auto !important;
-
+	align-items: flex-start !important;
+	gap: 4px;
 	position: absolute !important;
-	top: var(--better-findbar-position-top);
-	bottom: var(--better-findbar-position-bottom);
-	left: var(--better-findbar-position-left);
-	right: var(--better-findbar-position-right);
-	transform: translateX(var(--better-findbar-transform-translateX)) translateY(0);
-
+	top: var(--yafb-position-top);
+	bottom: var(--yafb-position-bottom);
+	left: var(--yafb-position-left);
+	right: var(--yafb-position-right);
+	width: calc(var(--theme-yafb-bar_width_percent, 90) * 1%) !important;
+	max-width: var(--yafb-textbox-width) !important;
+	height: auto !important;
+	margin: 0 !important;
 	overflow: unset !important;
-	box-shadow: var(--better-findbar-box-shadow);
-
-	background: var(--better-findbar-background-color) !important;
-	color: var(--better-findbar-text-color) !important;
-	border: 1px solid
-		color-mix(
-			in hsl,
-			var(--better-findbar-background-color) 75%,
-			var(--better-findbar-text-color)
-		) !important;
-
+	transform: translateX(var(--yafb-transform-translateX)) translateY(0);
 	transition: transform 0.35s ease !important;
-
 	visibility: visible !important;
 	opacity: 1 !important;
+	border-radius: var(--zen-border-radius) !important;
+	border: none !important;
+	box-shadow: var(--yafb-box-shadow);
+	background: var(--yafb-background-color) !important;
+	color: var(--yafb-text-color) !important;
+
+	& .findbar-closebutton {
+		order: 2;
+		flex-shrink: 0;
+		justify-content: flex-start !important;
+		margin-left: 0 !important;
+
+		& .toolbarbutton-icon {
+			align-self: flex-start !important;
+			margin: 0 !important;
+		}
+	}
 
 	& .findbar-container {
-		flex-wrap: wrap;
+		display: grid !important;
+		grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+		column-gap: var(--yafb-checkbox-gap) !important;
+		row-gap: var(--yafb-checkbox-gap) !important;
+		padding-left: 10px;
+		order: 1;
+		flex: 1;
+		min-width: 0;
 		overflow-x: auto !important;
 		height: auto !important;
 
-		row-gap: 10px;
-
 		& > :first-child {
+			grid-column: 1 / -1 !important;
+			display: flex !important;
+			align-items: center !important;
 			width: 100% !important;
+			min-width: 0 !important;
+		}
+
+		& > label.findbar-label,
+		& > description,
+		& > .find-status-icon {
+			grid-column: 1 / -1 !important;
 		}
 
 		& .findbar-textbox {
 			flex-grow: 1;
-			background: var(--better-findbar-background-color) !important;
-			color: var(--better-findbar-text-color) !important;
-			border: 1px solid
-				color-mix(
-					in hsl,
-					var(--better-findbar-background-color),
-					var(--better-findbar-text-color) 50%
-				) !important;
+			border: none !important;
+			box-shadow: none !important;
+			background: var(--yafb-background-color) !important;
+			color: var(--yafb-text-color) !important;
 
-			&[status="notfound"] {
-				background-color: color-mix(
-					in srgb,
-					var(--better-findbar-background-color),
-					#e80538 50%
-				) !important;
-				color: inherit;
+			&:focus {
+				outline: unset !important;
+				outline-offset: -1px !important;
 			}
 		}
 
-		& .findbar-textbox:focus {
-			outline: 1px solid
-				color-mix(
-					in hsl,
-					var(--better-findbar-background-color),
-					var(--better-findbar-text-color) 75%
-				) !important;
-			outline-offset: -1px !important;
+		& .findbar-find-previous,
+		& .findbar-find-next {
+			flex-shrink: 0 !important;
+			width: var(--yafb-control-height) !important;
+			min-width: var(--yafb-control-height) !important;
+			min-height: var(--yafb-control-height) !important;
+		}
+
+		& .findbar-find-next {
+			margin-right: 2px !important;
+		}
+
+		& .findbar-find-status {
+			display: none !important;
+
+			&[status="notfound"] {
+				display: block !important;
+				color: var(--theme-yafb-not_found_color, #ff4141) !important;
+				font-weight: 600 !important;
+			}
+		}
+
+		& > checkbox {
+			display: none !important;
+			width: auto !important;
+			min-width: 0 !important;
+			height: var(--yafb-checkbox-height) !important;
+			min-height: var(--yafb-checkbox-height) !important;
+			max-height: var(--yafb-checkbox-height) !important;
+			box-sizing: border-box !important;
+			align-items: center !important;
+			justify-content: center !important;
+			overflow: hidden !important;
+			-moz-box-flex: 0 !important;
+			flex-grow: 0 !important;
+
+			& .checkbox-label-box {
+				flex: 1 !important;
+				min-width: 0 !important;
+				justify-content: center !important;
+			}
+
+			& .checkbox-label {
+				overflow: hidden !important;
+				text-overflow: ellipsis !important;
+				white-space: nowrap !important;
+			}
 		}
 	}
 
 	&[hidden] {
-		transform: translateX(var(--better-findbar-transform-translateX)) translateY(var(--better-findbar-transform-translateY));
+		transform: var(--yafb-slide-transform);
 	}
 
 	@starting-style {
-		transform: translateX(var(--better-findbar-transform-translateX)) translateY(var(--better-findbar-transform-translateY));
+		transform: var(--yafb-slide-transform);
+	}
+
+	@media (-moz-bool-pref: "theme.yafb.hide_wrap_messages") {
+		& .findbar-container {
+			& .findbar-find-status[data-l10n-id="findbar-wrapped-to-top"],
+			& .findbar-find-status[data-l10n-id="findbar-wrapped-to-bottom"],
+			& .find-status-icon[status="wrapped"] {
+				display: none !important;
+			}
+		}
+	}
+
+	@media (-moz-bool-pref: "theme.yafb.stable_nav_buttons") {
+		& .findbar-find-previous:disabled,
+		& .findbar-find-next:disabled {
+			visibility: hidden !important;
+			pointer-events: none !important;
+		}
+	}
+
+	@media (-moz-bool-pref: "theme.yafb.instant_animations") {
+		&, & .findbar-container {
+			transition: initial !important;
+		}
+	}
+
+	@media (-moz-bool-pref: "theme.yafb.transparent_background") {
+		&, & .findbar-textbox {
+			backdrop-filter: blur(var(--theme-yafb-blur_amount, 8px));
+			background: color-mix(
+				in hsl,
+				var(--yafb-background-color),
+				transparent 10%
+			) !important;
+		}
 	}
 }
 
-/* Disable animations */
-@media (-moz-bool-pref: "theme.better_find_bar.instant_animations") {
-	findbar, findbar .findbar-container {
-		transition: initial !important;
-	}
+/* Option checkboxes */
+body:has(#theme-YAFB[theme-yafb-show_highlight="always"]) findbar .findbar-highlight,
+body:has(#theme-YAFB[theme-yafb-show_match_case="always"]) findbar .findbar-case-sensitive,
+body:has(#theme-YAFB[theme-yafb-show_match_diacritics="always"]) findbar .findbar-match-diacritics,
+body:has(#theme-YAFB[theme-yafb-show_whole_words="always"]) findbar .findbar-entire-word {
+	display: flex !important;
 }
 
-/* Horizontal Position */
-body:has(
-		#theme-Better-Find-Bar[theme-better_find_bar-horizontal_position="left"]
-	) {
-	--better-findbar-transform-translateX: 0%;
-	--better-findbar-position-left: 15px;
-	--better-findbar-position-right: auto;
+body:has(#theme-YAFB[theme-yafb-show_highlight="when_checked"]) findbar .findbar-highlight[checked],
+body:has(#theme-YAFB[theme-yafb-show_match_case="when_checked"]) findbar .findbar-case-sensitive[checked],
+body:has(#theme-YAFB[theme-yafb-show_match_diacritics="when_checked"]) findbar .findbar-match-diacritics[checked],
+body:has(#theme-YAFB[theme-yafb-show_whole_words="when_checked"]) findbar .findbar-entire-word[checked] {
+	display: flex !important;
 }
 
-body:has(
-		#theme-Better-Find-Bar[theme-better_find_bar-horizontal_position="right"]
-	) {
-	--better-findbar-transform-translateX: 0%;
-	--better-findbar-position-left: auto;
-	--better-findbar-position-right: 15px;
-}
-
-/* Vertical Position */
-body:has(
-		#theme-Better-Find-Bar[theme-better_find_bar-vertical_position="top"]
-	) {
-	--better-findbar-transform-translateY: -150px;
-	--better-findbar-position-bottom: auto;
-	--better-findbar-position-top: 15px;
-}
-
-
-/* Background blur */
-@media (-moz-bool-pref: "theme.better_find_bar.transparent_background") {
-	findbar,
-	findbar .findbar-textbox:not([status="notfound"]) {
-		backdrop-filter: blur(8px);
-
-		background: color-mix(in hsl, var(--better-findbar-background-color), transparent 10%) !important;
-	}
-}
-
-/* Hide highlight checkbox */
-body:has(
-		#theme-Better-Find-Bar[theme-better_find_bar-hide_highlight="hide_immediately"]
-	) {
-	findbar .findbar-highlight {
-		display: none !important;
-	}
-}
-
-body:has(
-		#theme-Better-Find-Bar[theme-better_find_bar-hide_highlight="hide_on_disable"]
-	) {
-	findbar checkbox.findbar-highlight:not([checked]) {
-		display: none !important;
-	}
-}
-
-/* Hide match case checkbox */
-body:has(
-		#theme-Better-Find-Bar[theme-better_find_bar-hide_match_case="hide_immediately"]
-	) {
-	findbar .findbar-case-sensitive {
-		display: none !important;
-	}
-}
-
-body:has(
-		#theme-Better-Find-Bar[theme-better_find_bar-hide_match_case="hide_on_disable"]
-	) {
-	findbar checkbox.findbar-case-sensitive:not([checked]) {
-		display: none !important;
-	}
-}
-
-/* Hide match diacritics checkbox */
-body:has(
-		#theme-Better-Find-Bar[theme-better_find_bar-hide_match_diacritics="hide_immediately"]
-	) {
-	findbar .findbar-match-diacritics {
-		display: none !important;
-	}
-}
-
-body:has(
-		#theme-Better-Find-Bar[theme-better_find_bar-hide_match_diacritics="hide_on_disable"]
-	) {
-	findbar checkbox.findbar-match-diacritics:not([checked]) {
-		display: none !important;
-	}
-}
-
-/* Hide whole words checkbox */
-body:has(
-		#theme-Better-Find-Bar[theme-better_find_bar-hide_whole_words="hide_immediately"]
-	) {
-	findbar .findbar-entire-word {
-		display: none !important;
-	}
-}
-
-body:has(
-		#theme-Better-Find-Bar[theme-better_find_bar-hide_whole_words="hide_on_disable"]
-	) {
-	findbar .findbar-entire-word:not([checked]) {
-		display: none !important;
-	}
-}
-
-/* Hide find status label */
-@media (-moz-bool-pref: "theme.better_find_bar.hide_find_status") {
+@media (-moz-bool-pref: "theme.yafb.show_find_status") {
 	findbar .findbar-find-status {
-		display: none !important;
-	}
-}
-
-/* Hide found matches label */
-@media (-moz-bool-pref: "theme.better_find_bar.hide_found_matches") {
-	findbar .findbar-label.found-matches {
-		display: none !important;
+		display: block !important;
 	}
 }
